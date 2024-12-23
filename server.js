@@ -94,20 +94,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-
-
 // Load routes
 const routeFiles = fs.readdirSync("./src/routes");
-routeFiles.forEach(async (file) => { // Added async here to use await
+routeFiles.forEach(async (file) => {
   try {
-    const route = await import(`./src/routes/${file}`); // Corrected string interpolation
-    app.use("/api/v1", route.default); // Ensure the route default export matches
+    const route = await import(`./src/routes/${file}`); // Dynamically import routes
+    app.use("/api/v1", route.default); // Use default exports from routes
   } catch (err) {
-    console.error(`Failed to load route file ${file}:`, err.message); // Corrected string interpolation
+    console.error(`Failed to load route file ${file}:`, err.message);
   }
 });
-
-
 
 // Error handler middleware (placed at the end)
 app.use(errorHandler);
@@ -117,7 +113,7 @@ const startServer = async () => {
   try {
     await connect();
     app.listen(port, () => {
-            console.log(`Server is running on port ${port}`); // Corrected string interpolation
+      console.log(`Server is running on port ${port}`);
     });
   } catch (error) {
     console.error("Failed to start server:", error.message);
@@ -125,12 +121,8 @@ const startServer = async () => {
   }
 };
 
-
-
-
-
-
 startServer();
+
 
 
 // Serve static files from the frontend directory
