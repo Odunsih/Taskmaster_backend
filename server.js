@@ -86,7 +86,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000", // Corrected the fallback operator
+    origin: process.env.CLIENT_URL || "https://674b80d4ec488698b05cea95--tassks-master.netlify.app", // Corrected the fallback operator
     credentials: true,
   })
 );
@@ -141,3 +141,4 @@ app.use(express.static(path.join(__dirname, "frontend")));
 // });
 
 
+                
