@@ -1,72 +1,3 @@
-// import express from "express";
-// import dotenv from "dotenv";
-// import cors from "cors";
-// import connect from "./src/db/connect.js";
-// import cookieParser from "cookie-parser";
-// import fs from "node:fs";
-// import errorHandler from "./src/helpers/errorhandler.js";
-// import path from "path";
-
-// dotenv.config();
-
-// const port = process.env.PORT || 8000;
-
-// const app = express();
-
-// // middleware
-// app.use(
-//   cors({
-//     origin: process.env.CLIENT_URL,
-//     credentials: true,
-//   })
-// );
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-// app.use(cookieParser());
-
-// // error handler middleware
-// app.use(errorHandler);
-
-// //routes
-// const routeFiles = fs.readdirSync("./src/routes");
-
-// routeFiles.forEach((file) => {
-//   // use dynamic import
-//   import(`./src/routes/${file}`)
-//     .then((route) => {
-//       app.use("/api/v1", route.default);
-//     })
-//     .catch((err) => {
-//       console.log("Failed to load route file", err);
-//     });
-// });
-
-// const server = async () => {
-//   try {
-//     await connect();
-
-//     app.listen(port, () => {
-//       console.log(`Server is running on port ${port}`);
-//     });
-//   } catch (error) {
-//     console.log("Failed to strt server...", error.message);
-//     process.exit(1);
-//   }
-// };
-
-// // Serve static files from the frontend directory
-// const __dirname = path.resolve(); // Ensure __dirname is available
-// app.use(express.static(path.join(__dirname, "frontend")));
-
-// // Route all other requests to your frontend
-// app.get("*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "frontend", "index.html"));
-// });
-
-// server();
-
-
-
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -84,20 +15,27 @@ const __dirname = path.resolve(); // Ensure proper path handling
 const app = express();
 
 // Middleware
-// app.use(
-//   cors({
-//     origin: process.env.CLIENT_URL || "https://674b80d4ec488698b05cea95--tassks-master.netlify.app", // Corrected the fallback operator
-//     credentials: true,
-//   })
-// );
-
+const allowedOrigins = [
+  'http://127.0.0.1:5500',
+  'http://localhost:5500',
+  'https://taskmaster-backend-six.vercel.app',
+  process.env.CLIENT_URL,
+  "https://674b80d4ec488698b05cea95--tassks-master.netlify.app"
+].filter(Boolean);
 
 app.use(cors({
-  origin: process.env.CLIENT_URL || "https://674b80d4ec488698b05cea95--tassks-master.netlify.app",
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -131,14 +69,9 @@ const startServer = async () => {
 
 startServer();
 
-
-
 // Serve static files from the frontend directory
 app.use(express.static(path.join(__dirname, "frontend")));
 // Route all other requests to your frontend's index.html
 // app.get("*", (req, res) => {
 //   res.sendFile(path.resolve(__dirname, "frontend", "index.html"));
 // });
-
-
-                
