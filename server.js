@@ -84,12 +84,20 @@ const __dirname = path.resolve(); // Ensure proper path handling
 const app = express();
 
 // Middleware
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "https://674b80d4ec488698b05cea95--tassks-master.netlify.app", // Corrected the fallback operator
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: process.env.CLIENT_URL || "https://674b80d4ec488698b05cea95--tassks-master.netlify.app", // Corrected the fallback operator
+//     credentials: true,
+//   })
+// );
+
+
+app.use(cors({
+  origin: process.env.CLIENT_URL || "https://674b80d4ec488698b05cea95--tassks-master.netlify.app",
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
